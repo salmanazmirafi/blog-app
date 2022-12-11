@@ -8,4 +8,4 @@ const catagoriesSchema = new mongoose.Schema({
 
 },{timestamps:true})
 
-export default mongoose.model("Post", catagoriesSchema)
+export default mongoose.model("Category", catagoriesSchema)

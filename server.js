@@ -2,6 +2,7 @@ import express from "express";
 const app = express();
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import multer from "multer";
 
 //Security Middleware Import
 import cors from "cors";
@@ -11,6 +12,7 @@ import morgan from "morgan";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/user.js";
 import postRoutes from "./routes/post.js";
+import categoryRoutes from "./routes/category.js";
 
 // Env Config
 dotenv.config();
@@ -20,10 +22,25 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan("common"));
 
+// Uploads File Config
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, req.body.name);
+  },
+});
+const uploads = multer({ storage: storage });
+
+app.post("/api/v1/upload", uploads.single("file"), (req, res) => {
+  res.status(200).json("Image Upload Success");
+});
 // Routes
 app.use("/api/v1", authRoutes);
 app.use("/api/v1/", userRoutes);
 app.use("/api/v1/posts", postRoutes);
+app.use("/api/v1/category", categoryRoutes);
 
 // Mongo DB Database Connection 🔂
 mongoose.set("strictQuery", true);
